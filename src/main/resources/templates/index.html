@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-	<title>EasyInterior</title>
+	<title>Easy Interior</title>
 	<style>
         body {
             margin: 0;
@@ -11,78 +11,42 @@
             align-items: center;
             height: 100vh;
             background-color: #f4f4f4;
-            color: #333;
+            color: #6f4f1f;
             text-align: center;
-            overflow: hidden;
         }
-
         .container {
             max-width: 600px;
-            position: relative;
         }
-
-        /* Button styling */
+        h1 {
+            font-size: 74px;
+            margin: -100px 0 0 0;
+        }
+        p {
+            font-size: 1.2rem;
+            margin: 20px 0 50px;
+        }
         .btn {
             display: inline-block;
-            margin-top: 30px;
-            padding: 15px 30px;
-            font-size: 1.2rem;
+            padding: 10px 20px;
+            font-size: 1rem;
             color: white;
-            background-color: #007BFF;
+            background-color: #cd8d29;
             border: none;
-            border-radius: 8px;
+            border-radius: 5px;
             text-decoration: none;
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
-
         .btn:hover {
-            background-color: #0056b3;
-        }
-
-        /* SVG container styling */
-        svg {
-            display: block;
-            margin: 0 auto;
-        }
-
-        /* Text Color */
-        .brown-text {
-            fill: #6f4f1f; /* Brown color */
-        }
-
-        /* Adjusting the positioning of the second text */
-        .lower-text {
-            margin-top: 50px;
+            background-color: #b4791d;
         }
 	</style>
 </head>
 <body>
 <div class="container">
-	<svg width="100%" height="200">
-		<defs>
-			<path id="arcPath" d="M 50,150 Q 150,50 250,150 T 450,150" fill="transparent"/>
-		</defs>
-		<text font-size="60" font-weight="bold" class="brown-text">
-			<textPath href="#arcPath">
-				EasyInterior
-			</textPath>
-		</text>
-	</svg>
-
-	<svg width="100%" height="200" class="lower-text">
-		<defs>
-			<path id="arcPath2" d="M 50,150 Q 150,100 250,150 T 450,150" fill="transparent"/>
-		</defs>
-		<text font-size="24" font-weight="normal" class="brown-text">
-			<textPath href="#arcPath2">
-				Visualizing your room has never been that easy
-			</textPath>
-		</text>
-	</svg>
-
-	<!-- Button -->
-	<a href="/make-interior" class="btn">Make Your Interior</a>
+	<h1>EasyInterior</h1>
+	<p>Visualizing your room has never been that easy</p>
+	<a href="/builder" class="btn">Make Your Interior</a>
 </div>
 </body>
 </html>
