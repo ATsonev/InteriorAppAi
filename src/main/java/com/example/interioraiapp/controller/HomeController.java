@@ -11,9 +11,9 @@ public class HomeController{
         return "index";
     }
 
-    @GetMapping("/builder")
+    @GetMapping("/setup")
     public String builder(){
-        return "builder";
+        return "setup";
     }
 
 }
