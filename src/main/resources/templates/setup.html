@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta charset="UTF-8">
 	<title>Interior Builder</title>
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
 	<style>
         * {
             box-sizing: border-box;
@@ -17,7 +17,7 @@
         }
         .content {
             background-color: #ffffff;
-			margin: 30px auto;
+            margin: 30px auto;
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -37,11 +37,11 @@
         .row {
             display: flex;
             justify-content: space-between;
-			gap: 15px;
+            gap: 15px;
         }
         .form-group {
             position: relative;
-			margin-top: 4px;
+            margin-top: 4px;
             display: flex;
             flex-direction: column;
             align-items: flex-start;
@@ -53,7 +53,7 @@
         }
         label {
             font-size: 17px;
-			font-weight: 500;
+            font-weight: 500;
             margin-bottom: 5px;
             color: #333;
         }
@@ -95,22 +95,22 @@
         .submit-btn:hover {
             background-color: #0056b3;
         }
-		.furniture-row{
-			border: 2px solid #D2B68A;
-			margin-top: 10px;
-			border-radius: 15px;
+        .furniture-row{
+            border: 2px solid #D2B68A;
+            margin-top: 10px;
+            border-radius: 15px;
             position: relative;
-			padding: 10px;
-		}
-		.furniture-row select{
+            padding: 10px;
+        }
+        .furniture-row select{
             margin: 0;
-			width: 100%;
+            width: 100%;
             padding: 8px;
             font-size: 1rem;
-			text-align: left;
+            text-align: left;
             border: 1px solid #ccc;
             border-radius: 4px;
-		}
+        }
 
         #furniture-selection-container {
             max-height: 350px;
@@ -121,39 +121,31 @@
         .furniture-row select option{
             text-align: left;
         }
-		.furniture-row select optgroup{
-			text-align: center;
-		}
-		.furniture-row label{
-			text-align: center;
-			width: 100%;
-		}
-
-		.add-furniture-btn{
+        .furniture-row select optgroup{
             text-align: center;
-			font-size: 16px;
-			color: black;
-			border-radius: 6px;
-			height: 30px;
-			width: 35px;
-			background-color: #F5E8B6;
+        }
+        .furniture-row label{
+            text-align: center;
+            width: 100%;
+        }
+
+        .add-furniture-btn{
+            text-align: center;
+            font-size: 16px;
+            color: black;
+            border-radius: 6px;
+            height: 30px;
+            width: 35px;
+            background-color: #F5E8B6;
             margin: -15px auto 0;
         }
 
-        .select2-container .select2-results__option {
-            padding: 2px 4px;
-            font-size: 1rem;
-            color: #333;
-            cursor: pointer;
-        }
-
-        .select2-container .select2-results__optgroup {
+        .error-message {
+            color: red;
+            font-size: 18px;
             text-align: center;
-        }
-
-        .select2-container--default .select2-results>.select2-results__options {
-            max-height: 300px;
-            overflow-y: auto;
+            margin-bottom: 10px;
+			margin-top: -15px;
         }
 	</style>
 </head>
@@ -161,24 +153,27 @@
 <div class="main">
 	<div class="content">
 		<h1><i class="fa fa-pencil-ruler"></i> Design Your Room</h1>
-		<form>
+		<form th:method="POST"
+			  th:object="${furnitureDto}"
+			  th:action="@{/setup}"
+			  onsubmit="captureFurnitureData()">
 			<div class="row">
 				<div class="form-group">
 					<label for="width"><i class="fa fa-arrows-alt-h"></i> Width (m):</label>
-					<input type="number" id="width" name="width" min="0" placeholder="e.g., 4.5" required>
+					<input type="number" id="width" name="width" min="0" step="0.001" placeholder="e.g., 4.5" required>
 				</div>
 				<div class="form-group">
 					<label for="length"><i class="fa fa-arrows-alt-h"></i> Length (m):</label>
-					<input type="number" id="length" name="length" min="0" placeholder="e.g., 6.0" required>
+					<input type="number" id="length" name="length" min="0" step="0.001" placeholder="e.g., 6.0" required>
 				</div>
 				<div class="form-group">
 					<label for="height"><i class="fa fa-arrows-alt-v"></i> Height (m):</label>
-					<input type="number" id="height" name="height" min="0" placeholder="e.g., 2.8" required>
+					<input type="number" id="height" name="height" min="0" step="0.001" placeholder="e.g., 2.8" required>
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="center-label" for="room-type"><i class="fa fa-home"></i> Room Type:</label>
-				<select id="room-type" name="room-type" required>
+				<select id="room-type" name="room-type" required th:field="*{roomType}">
 					<option value="" disabled selected>Select Room Type</option>
 					<option value="living-room">Living Room</option>
 					<option value="kitchen">Kitchen</option>
@@ -189,12 +184,12 @@
 				</select>
 			</div>
 			<h3 style="text-align: center; max-width: 100%; margin-bottom: 0"><i class="fa-solid fa-couch"></i> Select furniture</h3>
-			<div id="furniture-selection-container">
+			<div id="furniture-selection-container" th:field="*{furniture}">
 				<div id="furniture-selection" class="furniture-row row">
 					<div class="form-group">
 						<div style="position: absolute; top: 25%">
 							<label for="furniture-select">Furniture</label>
-							<select id="furniture-select" name="furniture-select" required>
+							<select id="furniture-select" th:name="furnitureName" name="furniture-name" required>
 								<option style="text-align: center" value="" disabled selected>Select Furniture</option>
 								<!-- Living Room -->
 								<optgroup label="Living Room">
@@ -266,17 +261,20 @@
 						<div class="row">
 							<div class="form-group">
 								<label for="furniture-width">Width (m):</label>
-								<input type="number" id="furniture-width" name="furniture-width" min="0" placeholder="Width (m)" required>
+								<input type="number" th:name="furnitureWidth" id="furniture-width" name="furniture-width" min="0" step="0.001"
+									   placeholder="Width (m)" required>
 							</div>
 							<div class="form-group">
 								<label for="furniture-length">Length (m):</label>
-								<input type="number" id="furniture-length" name="furniture-length" min="0" placeholder="Length (m)" required>
-							</div>
+								<input type="number" th:name="furnitureLength" id="furniture-length" name="furniture-length" min="0" step="0.001"
+									   placeholder="Length (m)" required>
+							</div>w\
 						</div>
 						<div class="row">
 							<div class="form-group">
 								<label for="furniture-height">Height (m):</label>
-								<input type="number" id="furniture-height" name="furniture-height" min="0" placeholder="Height (m)" required>
+								<input type="number" th:name="furnitureHeight" id="furniture-height" name="furniture-height" min="0" step="0.001"
+									   placeholder="Height (m)" required>
 							</div>
 							<div class="form-group">
 								<label for="count">Count</label>
@@ -286,40 +284,64 @@
 					</div>
 				</div>
 			</div>
+			<div id="error-message" class="error-message" style="display: none;">Please select a furniture item before adding another row.</div>
 			<button type="button" class="add-furniture-btn" onclick="addFurnitureRow()">+</button>
+			<div class="form-group">
+				<label for="additional-description" style="text-align: center;"><i class="fa fa-comment-dots"></i> Additional Description:</label>
+				<textarea th:field="*{description}" id="additional-description" name="additional-description" rows="4" placeholder="Add any extra details about the furniture or room..."
+						  style="resize: none; width: 100%; border: 1px solid #ccc; border-radius: 4px; padding: 8px; font-size: 1rem;"></textarea>
+			</div>
+			<input type="hidden" id="furnitureDtos" th:field="*{furniture}" name="furnitureDtos">
 			<button type="submit" class="submit-btn"><i class="fa fa-play"></i> Start Designing</button>
 		</form>
 	</div>
 </div>
 </body>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-    $(document).ready(function () {
-        initializeSelect2();
-        $('#furniture-select').select2();
-    });
-
-    function initializeSelect2() {
-        $('select[id="furniture-select"]').select2({
-            placeholder: "Search Furniture",
-            allowClear: true,
-            width: 'resolve' // Ensures proper width
-        });
-    }
-
     function addFurnitureRow() {
-        const furnitureRow = document.getElementById('furniture-selection');
-        const newRow = furnitureRow.cloneNode(true);
-        const container = document.getElementById('furniture-selection-container');
+        const lastRow = document.querySelector('#furniture-selection-container .furniture-row:last-child');
+        const select = lastRow.querySelector('select');
+        const errorMessage = document.getElementById('error-message');
 
-        $(newRow).find('input').val('');
-        $(newRow).find('select').val('').trigger('change');
+        if (select.value === "") {
+            errorMessage.style.display = "block";
+        } else {
+            errorMessage.style.display = "none";
+            const newRow = lastRow.cloneNode(true);
+            const newSelect = newRow.querySelector('select');
+            newSelect.value = "";
+            const newFurnitureWidth = newRow.querySelector('#furniture-width');
+            newFurnitureWidth.value = "";
+            const newFurnitureLength = newRow.querySelector('#furniture-length');
+            newFurnitureLength.value = "";
+            const newFurnitureHeight = newRow.querySelector('#furniture-height');
+            newFurnitureHeight.value = "";
+            const newCount = newRow.querySelector('#count');
+            newCount.value = "";
 
-        container.appendChild(newRow);
-
-        initializeSelect2();
+            document.getElementById("furniture-selection-container").appendChild(newRow);
+        }
     }
-</script>
 
+    function captureFurnitureData() {
+        const furnitureDtos = Array.from(document.querySelectorAll('#furniture-selection-container .furniture-row')).map(row => {
+            const select = row.querySelector('select');
+            const width = parseFloat(row.querySelector('#furniture-width').value);
+            const length = parseFloat(row.querySelector('#furniture-length').value);
+            const height = parseFloat(row.querySelector('#furniture-height').value);
+            const count = parseInt(row.querySelector('#count').value, 10);
+            console.log("asd");
+
+            return {
+                furnitureName: select.value,
+                furnitureWidth: width,
+                furnitureLength: length,
+                furnitureHeight: height,
+                count: count
+            };
+        });
+        console.log(furnitureDtos);
+        document.getElementById('furnitureDtos').value = JSON.stringify(furnitureDtos);
+	}
+</script>
 </html>
