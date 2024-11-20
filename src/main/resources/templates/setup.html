@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<title>Interior Builder</title>
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 	<style>
         * {
             box-sizing: border-box;
@@ -138,6 +138,22 @@
 			width: 35px;
 			background-color: #F5E8B6;
             margin: -15px auto 0;
+        }
+
+        .select2-container .select2-results__option {
+            padding: 2px 4px;
+            font-size: 1rem;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .select2-container .select2-results__optgroup {
+            text-align: center;
+        }
+
+        .select2-container--default .select2-results>.select2-results__options {
+            max-height: 300px;
+            overflow-y: auto;
         }
 	</style>
 </head>
@@ -276,18 +292,34 @@
 	</div>
 </div>
 </body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
+    $(document).ready(function () {
+        initializeSelect2();
+        $('#furniture-select').select2();
+    });
+
+    function initializeSelect2() {
+        $('select[id="furniture-select"]').select2({
+            placeholder: "Search Furniture",
+            allowClear: true,
+            width: 'resolve' // Ensures proper width
+        });
+    }
+
     function addFurnitureRow() {
         const furnitureRow = document.getElementById('furniture-selection');
         const newRow = furnitureRow.cloneNode(true);
         const container = document.getElementById('furniture-selection-container');
-        container.appendChild(newRow);
-    }
 
-    $(document).ready(function() {
-        $('#furniture-select').select2();
-    });
+        $(newRow).find('input').val('');
+        $(newRow).find('select').val('').trigger('change');
+
+        container.appendChild(newRow);
+
+        initializeSelect2();
+    }
 </script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+
 </html>
