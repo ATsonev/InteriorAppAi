@@ -24,7 +24,7 @@ public class HomeController{
     }
 
     @PostMapping("/setup")
-    public String getSetup(@Valid @ModelAttribute("dto") SetupDto furnitureDto){
+    public String getSetup(@Valid @ModelAttribute SetupDto furnitureDto){
         return "redirect:/setup";
     }
 

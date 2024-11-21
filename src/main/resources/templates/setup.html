@@ -189,7 +189,7 @@
 					<div class="form-group">
 						<div style="position: absolute; top: 25%">
 							<label for="furniture-select">Furniture</label>
-							<select id="furniture-select" th:name="furnitureName" name="furniture-name" required>
+							<select id="furniture-select" th:field="*{furniture[0].furnitureName}" name="furniture-name" required>
 								<option style="text-align: center" value="" disabled selected>Select Furniture</option>
 								<!-- Living Room -->
 								<optgroup label="Living Room">
@@ -261,24 +261,24 @@
 						<div class="row">
 							<div class="form-group">
 								<label for="furniture-width">Width (m):</label>
-								<input type="number" th:name="furnitureWidth" id="furniture-width" name="furniture-width" min="0" step="0.001"
+								<input type="number" th:field="*{furniture[0].furnitureWidth}" id="furniture-width" name="furniture-width" min="0" step="0.001"
 									   placeholder="Width (m)" required>
 							</div>
 							<div class="form-group">
 								<label for="furniture-length">Length (m):</label>
-								<input type="number" th:name="furnitureLength" id="furniture-length" name="furniture-length" min="0" step="0.001"
+								<input type="number" th:field="*{furniture[0].furnitureLength}" id="furniture-length" name="furniture-length" min="0" step="0.001"
 									   placeholder="Length (m)" required>
-							</div>w\
+							</div>
 						</div>
 						<div class="row">
 							<div class="form-group">
 								<label for="furniture-height">Height (m):</label>
-								<input type="number" th:name="furnitureHeight" id="furniture-height" name="furniture-height" min="0" step="0.001"
+								<input type="number" th:field="*{furniture[0].furnitureHeight}" id="furniture-height" name="furniture-height" min="0" step="0.001"
 									   placeholder="Height (m)" required>
 							</div>
 							<div class="form-group">
 								<label for="count">Count</label>
-								<input type="number" id="count" name="count" min="0" placeholder="1, 2, 3 ..." required>
+								<input type="number" th:field="*{furniture[0].count}" id="count" name="count" min="0" placeholder="1, 2, 3 ..." required>
 							</div>
 						</div>
 					</div>
@@ -291,7 +291,7 @@
 				<textarea th:field="*{description}" id="additional-description" name="additional-description" rows="4" placeholder="Add any extra details about the furniture or room..."
 						  style="resize: none; width: 100%; border: 1px solid #ccc; border-radius: 4px; padding: 8px; font-size: 1rem;"></textarea>
 			</div>
-			<input type="hidden" id="furnitureDtos" th:field="*{furniture}" name="furnitureDtos">
+			<input type="hidden" id="furnitureDtos" name="furnitureDtos">
 			<button type="submit" class="submit-btn"><i class="fa fa-play"></i> Start Designing</button>
 		</form>
 	</div>
@@ -307,41 +307,55 @@
             errorMessage.style.display = "block";
         } else {
             errorMessage.style.display = "none";
-            const newRow = lastRow.cloneNode(true);
-            const newSelect = newRow.querySelector('select');
-            newSelect.value = "";
-            const newFurnitureWidth = newRow.querySelector('#furniture-width');
-            newFurnitureWidth.value = "";
-            const newFurnitureLength = newRow.querySelector('#furniture-length');
-            newFurnitureLength.value = "";
-            const newFurnitureHeight = newRow.querySelector('#furniture-height');
-            newFurnitureHeight.value = "";
-            const newCount = newRow.querySelector('#count');
-            newCount.value = "";
 
-            document.getElementById("furniture-selection-container").appendChild(newRow);
+            const newRow = lastRow.cloneNode(true); // Clone the last row
+            const allRows = document.querySelectorAll('#furniture-selection-container .furniture-row');
+            const newIndex = allRows.length; // Determine the new row index
+
+            // Update select element
+            const newSelect = newRow.querySelector('select');
+            newSelect.value = ""; // Reset value
+            newSelect.id = `furniture-select-${newIndex}`; // Update ID
+            newSelect.name = `furniture[${newIndex}].furnitureName`; // Update name
+
+            // Update width input
+            const newFurnitureWidth = newRow.querySelector('#furniture-width');
+            newFurnitureWidth.value = ""; // Reset value
+            newFurnitureWidth.id = `furniture-width-${newIndex}`; // Update ID
+            newFurnitureWidth.name = `furniture[${newIndex}].furnitureWidth`; // Update name
+
+            // Update length input
+            const newFurnitureLength = newRow.querySelector('#furniture-length');
+            newFurnitureLength.value = ""; // Reset value
+            newFurnitureLength.id = `furniture-length-${newIndex}`; // Update ID
+            newFurnitureLength.name = `furniture[${newIndex}].furnitureLength`; // Update name
+
+            // Update height input
+            const newFurnitureHeight = newRow.querySelector('#furniture-height');
+            newFurnitureHeight.value = ""; // Reset value
+            newFurnitureHeight.id = `furniture-height-${newIndex}`; // Update ID
+            newFurnitureHeight.name = `furniture[${newIndex}].furnitureHeight`; // Update name
+
+            // Update count input
+            const newCount = newRow.querySelector('#count');
+            newCount.value = ""; // Reset value
+            newCount.id = `count-${newIndex}`; // Update ID
+            newCount.name = `furniture[${newIndex}].count`; // Update name
+
+            document.getElementById("furniture-selection-container").appendChild(newRow); // Append the new row
         }
     }
 
     function captureFurnitureData() {
-        const furnitureDtos = Array.from(document.querySelectorAll('#furniture-selection-container .furniture-row')).map(row => {
-            const select = row.querySelector('select');
-            const width = parseFloat(row.querySelector('#furniture-width').value);
-            const length = parseFloat(row.querySelector('#furniture-length').value);
-            const height = parseFloat(row.querySelector('#furniture-height').value);
-            const count = parseInt(row.querySelector('#count').value, 10);
-            console.log("asd");
+        const furnitureDtos = Array.from(document.querySelectorAll('#furniture-selection-container .furniture-row')).map(row => ({
+            furnitureName: row.querySelector('select').value,
+            furnitureWidth: parseFloat(row.querySelector('#furniture-width').value),
+            furnitureLength: parseFloat(row.querySelector('#furniture-length').value),
+            furnitureHeight: parseFloat(row.querySelector('#furniture-height').value),
+            count: parseInt(row.querySelector('#count').value, 10),
+        }));
 
-            return {
-                furnitureName: select.value,
-                furnitureWidth: width,
-                furnitureLength: length,
-                furnitureHeight: height,
-                count: count
-            };
-        });
-        console.log(furnitureDtos);
         document.getElementById('furnitureDtos').value = JSON.stringify(furnitureDtos);
-	}
+    }
 </script>
 </html>
