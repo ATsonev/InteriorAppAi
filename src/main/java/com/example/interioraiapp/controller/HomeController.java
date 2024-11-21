@@ -1,7 +1,7 @@
 package com.example.interioraiapp.controller;
 
-import com.example.interioraiapp.model.FurnitureDto;
 import com.example.interioraiapp.model.SetupDto;
+import com.example.interioraiapp.service.FurnitureService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +11,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class HomeController{
+
+    public final FurnitureService furnitureService;
+
+    public HomeController(FurnitureService furnitureService) {
+        this.furnitureService = furnitureService;
+    }
 
     @GetMapping("/")
     public String index(){
